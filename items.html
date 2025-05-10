@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Found Items - FindIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #2d1b4e;
+      --primary-light: #422775;
+      --primary-dark: #1a0f2e;
+      --accent: #00e9c0;
+      --accent-hover: #00c9a7;
+      --accent-transparent: rgba(0, 233, 192, 0.15);
+      --light: #f7f9fc;
+      --dark: #151026;
+      --gray: #e0e0e0;
+      --shadow: rgba(0, 0, 0, 0.2);
+      --card-bg: rgba(45, 27, 78, 0.9);
+      --card-border: rgba(0, 233, 192, 0.3);
+      --gradient: linear-gradient(135deg, #2d1b4e, #381e66);
+      --gradient-accent: linear-gradient(135deg, #00e9c0, #00a38c);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--dark);
+      color: var(--light);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    header {
+      background: rgba(26, 15, 46, 0.95);
+      padding: 20px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    header.scrolled {
+      padding: 15px 50px;
+      background: rgba(26, 15, 46, 0.98);
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--light);
+      position: relative;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    nav a {
+      color: var(--light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      padding: 5px 0;
+      font-size: 16px;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--accent);
+      transition: var(--transition);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    /* Page specific styles */
+    .section {
+      padding: 120px 50px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section h2 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .section h2::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+    
+    .section p {
+      text-align: center;
+      max-width: 800px;
+      margin: 30px auto;
+      line-height: 1.6;
+      color: rgba(247, 249, 252, 0.8);
+    }
+
+    .search-container {
+      margin: 40px auto;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px 25px;
+      border-radius: 50px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--light);
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 233, 192, 0.3);
+      border-color: var(--accent);
+    }
+
+    .search-input::placeholder {
+      color: rgba(247, 249, 252, 0.5);
+    }
+
+    /* Filter control */
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: var(--primary-light);
+      color: var(--light);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    /* Items grid */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .item-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      border-color: var(--accent);
+    }
+
+    .item-image {
+      width: 100%;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .item-card:hover .item-image img {
+      transform: scale(1.1);
+    }
+
+    .item-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 5px 15px;
+      background: var(--accent);
+      color: var(--dark);
+      font-weight: 600;
+      font-size: 12px;
+      border-radius: 50px;
+      z-index: 1;
+    }
+
+    .item-details {
+      padding: 20px;
+    }
+
+    .item-details h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: var(--light);
+    }
+
+    .item-meta {
+      display: flex;
+      align-items: center;
+      color: rgba(247, 249, 252, 0.7);
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+
+    .item-meta i {
+      color: var(--accent);
+      margin-right: 5px;
+    }
+
+    .item-meta span {
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .item-description {
+      color: rgba(247, 249, 252, 0.8);
+      margin-bottom: 15px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .item-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-location {
+      font-size: 13px;
+      color: rgba(247, 249, 252, 0.6);
+      display: flex;
+      align-items: center;
+    }
+
+    .item-location i {
+      color: var(--accent);
+      margin-right: 5px;
+      font-size: 14px;
+    }
+
+    .item-btn {
+      padding: 8px 15px;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .item-btn:hover {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 50px;
+    }
+
+    .pagination-item {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--light);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pagination-item.active, .pagination-item:hover {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--primary-dark);
+      color: var(--light);
+      padding: 80px 50px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--gradient-accent);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 50px;
+    }
+
+    .footer-logo {
+      margin-bottom: 20px;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--light);
+    }
+
+    .footer-logo span {
+      color: var(--accent);
+    }
+
+    .footer-description {
+      color: rgba(247, 249, 252, 0.7);
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .footer-social a:hover {
+      background: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .footer-social a i {
+      color: var(--light);
+      font-size: 18px;
+    }
+
+    .footer-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      position: relative;
+      padding-bottom: 10px;
+      color: var(--light);
+    }
+
+    .footer-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 15px;
+    }
+
+    .footer-links a {
+      color: rgba(247, 249, 252, 0.7);
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+      transform: translateX(5px);
+    }
+
+    .footer-links a i {
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .footer-contact li {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      color: rgba(247, 249, 252, 0.7);
+    }
+
+    .footer-contact i {
+      margin-right: 15px;
+      color: var(--accent);
+      font-size: 18px;
+      margin-top: 5px;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 40px;
+      margin-top: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(247, 249, 252, 0.5);
+      font-size: 14px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 992px) {
+      header {
+        padding: 20px 30px;
+      }
+      
+      .section {
+        padding: 100px 30px 60px;
+      }
+      
+      .items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+      }
+      
+      nav {
+        display: none;
+      }
+      
+      .mobile-menu-toggle {
+        display: block;
+      }
+      
+      .section h2 {
+        font-size: 32px;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-toggle {
+      display: none;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .mobile-menu-toggle span {
+      display: block;
+      width: 30px;
+      height: 3px;
+      background-color: var(--light);
+      margin: 6px 0;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background: var(--primary-dark);
+      z-index: 1000;
+      padding: 100px 40px 40px;
+      transition: all 0.4s ease;
+      overflow-y: auto;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .mobile-nav.active {
+      right: 0;
+    }
+
+    .mobile-nav a {
+      display: block;
+      color: var(--light);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+    }
+
+    .mobile-nav a:hover {
+      color: var(--accent);
+      padding-left: 10px;
+    }
+
+    @media (max-width: 992px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Particles background -->
+  <div class="particles-container"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo">Find<span>It</span></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="lost.html">Lost Items</a>
+      <a href="found.html" class="active">Found Items</a>
+      <a href="report.html">Report Item</a>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="mobile-menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="lost.html">Lost Items</a>
+    <a href="found.html">Found Items</a>
+    <a href="report.html">Report</a>
+    <a href="about.html">About</a>
+  </div>
+
+  <!-- Main Content -->
+  <section class="section">
+    <h2>Found Items</h2>
+    <p>Browse through items that have been found across campus. If you recognize something as yours, click on "Claim Item" to start the verification process.</p>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search by item name, location, or date...">
+    </div>
+    
+    <!-- Filter Buttons -->
+    <div class="filter-container">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Today</button>
+      <button class="filter-btn">This Week</button>
+      <button class="filter-btn">Electronics</button>
+      <button class="filter-btn">ID Cards</button>
+      <button class="filter-btn">Accessories</button>
+    </div>
+    
+    <!-- Items Grid -->
+    <div class="items-grid">
+      <!-- Item 1 -->
+      <div class="item-card">
+        <div class="item-badge">Today</div>
+        <div class="item-image">
+          <img src="images/umbrella.jpg" alt="Red Umbrella">
+        </div>
+        <div class="item-details">
+          <h3>Red Umbrella</h3>
+          <div class="item-meta">
+            <span><i class="fas fa-calendar"></i> Apr 10, 2025</span>
+            <span><i class="fas fa-user"></i> Staff</span>
+          </div>
+          <p class="item-description">Found with slightly damaged handle near the main library entrance.</p>
+          <div class="item-action">
+            <div class="item-location">
+              <i class="fas fa-map-marker-alt"></i> Main Library
+            </div>
+            <button class="item-btn">Claim Item</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item 2 -->
+      <div class="item-card">
+        <div class="item-badge">Electronics</div>
+        <div class="item-image">
+          <img src="images/powerbank.jpg" alt="Power Bank">
+        </div>
+        <div class="item-details">
+          <h3>Mi Power Bank</h3>
+          <div class="item-meta">
+            <span><i class="fas fa-calendar"></i> Apr 9, 2025</span>
+            <span><i class="fas fa-user"></i> Student</span>
+          </div>
+          <p class="item-description">Black 10000mAh power bank with USB-C port found in Seminar Hall.</p>
+          <div class="item-action">
+            <div class="item-location">
+              <i class="fas fa-map-marker-alt"></i> Seminar Hall
+            </div>
+            <button class="item-btn">Claim Item</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item 3 -->
+      <div class="item-card">
+        <div class="item-badge">ID Cards</div>
+        <div class="item-image">
+          <img src="images/idcard.jpg" alt="Student ID Card">
+        </div>
+        <div class="item-details">
+          <h3>Student ID Card</h3>
+          <div class="item-meta">
+            <span><i class="fas fa-calendar"></i> Apr 8, 2025</span>
+            <span><i class="fas fa-user"></i> Security</span>
+          </div>
+          <p class="item-description">Student ID card belonging to Rahul M. Found near the canteen area.</p>
+          <div class="item-action">
+            <div class="item-location">
+              <i class="fas fa-map-marker-alt"></i> Campus Canteen
+            </div>
+            <button class="item-btn">Claim Item</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item 4 -->
+      <div class="item-card">
+        <div class="item-badge">Accessories</div>
+        <div class="item-image">
+          <img src="images/spectacles.jpg" alt="Prescription Glasses">
+        </div>
+        <div class="item-details">
+          <h3>Prescription Glasses</h3>
+          <div class="item-meta">
+            <span><i class="fas fa-calendar"></i> Apr 7, 2025</span>
+            <span><i class="fas fa-user"></i> Faculty</span>
+          </div>
+          <p class="item-description">Blue framed prescription glasses found in Classroom 103 after lectures.</p>
+          <div class="item-action">
+            <div class="item-location">
+              <i class="fas fa-map-marker-alt"></i> Classroom 103
+            </div>
+            <button class="item-btn">Claim Item</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item 5 -->
+      <div class="item-card">
+        <div class="item-badge">Accessories</div>
+        <div class="item-image">
+          <img src="images/blbackpack.jpg" alt="Black Backpack">
+        </div>
+        <div class="item-details">
+          <h3>Black Backpack</h3>
+          <div class="item-meta">
+            <span><i class="fas fa-calendar"></i> Apr 6, 2025</span>
+            <span><i class="fas fa-user"></i> Security</span>
+          </div>
+          <p class="item-description">Black Skybags backpack with laptop compartment found at the bus stop.</p>
+          <div class="item-action">
+            <div class="item-location">
+              <i class="fas fa-map-marker-alt"></i> Campus Bus Stop
+            </div>
+            <button class="item-btn">Claim Item</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item 6 -->
+      <div class="item-card">
+        <div class="item-badge">Electronics</div>
+        <div class="item-image">
+          <img src="images/airpods.jpg" alt="Wireless Earbuds">
+        </div>
+        <div class="item-details">
+          <h3>Wireless Earbuds</h3>
+          <div class="item-meta">
+            <span><i class="fas fa-calendar"></i> Apr 5, 2025</span>
+            <span><i class="fas fa-user"></i> Student</span>
+          </div>
+          <p class="item-description">White wireless earbuds with charging case found in the gym area.</p>
+          <div class="item-action">
+            <div class="item-location">
+              <i class="fas fa-map-marker-alt"></i> Campus Gym
+            </div>
+            <button class="item-btn">Claim Item</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pagination-item active">1</div>
+      <div class="pagination-item">2</div>
+      <div class="pagination-item">3</div>
+      <div class="pagination-item"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <div class="footer-logo">Find<span>It</span></div>
+        <p class="footer-description">
+          FindIt is a campus-based lost and found platform designed to help students and staff reconnect with their lost belongings quickly and efficiently.
+        </p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/share/1X12ascdN5/"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://twitter.com/@Adithya_2728"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/adithya_sirigiri/"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/in/adithya-sirigiri-a1a10a313?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="footer-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="lost.html"><i class="fas fa-chevron-right"></i> Lost Items</a></li>
+          <li><a href="found.html"><i class="fas fa-chevron-right"></i> Found Items</a></li>
+          <li><a href="report.html"><i class="fas fa-chevron-right"></i> Report Item</a></li>
+          <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h3 class="footer-title">Contact Us</h3>
+        <ul class="footer-contact">
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <div>IIIT Sonepat, <br>Haryana</div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>+91 9391175072</div>
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            <div>helpdesk.iiitsonepat@gmail.com</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div>© 2025 FindIt. All rights reserved. Developed by S.V.Adithya</div>
+    </div>
+  </footer>
+
+  <script>
+    // Header scroll effect
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+    
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileNav = document.querySelector('.mobile-nav');
+    
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mobileNav.classList.toggle('active');
+    });
+    
+    // Filter buttons
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // Animation for elements
+    document.addEventListener('DOMContentLoaded', function() {
+      const itemCards = document.querySelectorAll('.item-card');
+      
+      itemCards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('animated');
+        }, 100 * index);
+      });
+    });
+  </script>
+</body>
+</html>

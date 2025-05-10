@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | FindIt</title>
+  <style>
+    :root {
+      --primary: #9b59b6;
+      --text-light: #f4f4f4;
+      --dark-bg: rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('images/iiit.webp') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+
+    .login-box {
+      position: relative;
+      z-index: 1;
+      background: var(--dark-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 16px;
+      width: 330px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    .login-box img {
+      width: 60px;
+      margin-bottom: 1rem;
+    }
+
+    .login-box h2 {
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-box button:hover {
+      background-color: #8e44ad;
+    }
+
+    .login-box .toggle {
+      position: absolute;
+      top: 52%;
+      right: 20px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #ccc;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .login-box .signup {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .login-box .signup a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .login-box .signup a:hover {
+      text-decoration: underline;
+    }
+    a {
+  color: #a962ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="login-box">
+    <img src="images/findit.jpeg" alt="FindIt Logo" />
+    <h2>Login to FindIt</h2>
+    <form onsubmit="return validateLogin(event)">
+      <input type="text" id="username" placeholder="Username" required />
+      
+      <div class="password-container">
+        <input type="password" id="password" placeholder="Password" required />
+        <span class="toggle" onclick="togglePassword()">👁️</span>
+      </div>
+      
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordField = document.getElementById("password");
+      passwordField.type = passwordField.type === "password" ? "text" : "password";
+    }
+
+    function validateLogin(event) {
+      event.preventDefault(); // prevent default form submission
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      // Example login check (use real validation or backend in real cases)
+      if (username === "admin" && password === "1234") {
+        window.location.href = "index.html"; // redirect to homepage
+        return true;
+      } else {
+        alert("Invalid username or password.");
+        return false;
+      }
+    }
+  </script>
+</body>
+</html>

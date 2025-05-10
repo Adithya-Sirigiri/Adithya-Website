@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #9b59b6;
+      --text-light: #f4f4f4;
+      --dark-bg: rgba(0, 0, 0, 0.7);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('images/iiit.webp') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+    
+    .signup-container {
+      position: relative;
+      z-index: 1;
+      background: var(--dark-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 16px;
+      width: 420px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      color: var(--text-light);
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .signup-header {
+      margin-bottom: 2rem;
+    }
+    
+    .signup-header h1 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .signup-header p {
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    
+    .form-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(155, 89, 182, 0.3);
+    }
+    
+    .form-control:focus + .form-icon {
+      color: var(--primary);
+    }
+    
+    .form-icon {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      color: #aaa;
+      transition: color 0.3s ease;
+    }
+    
+    .form-label {
+      position: absolute;
+      top: 50%;
+      left: 40px;
+      transform: translateY(-50%);
+      color: #aaa;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .form-control:focus ~ .form-label,
+    .form-control:not(:placeholder-shown) ~ .form-label {
+      top: -12px;
+      left: 12px;
+      font-size: 0.75rem;
+      color: var(--primary);
+      background-color: var(--dark-bg);
+      padding: 0 4px;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn:hover {
+      background-color: #8e44ad;
+    }
+    
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .divider span {
+      padding: 0 1rem;
+    }
+    
+    .social-signup {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .social-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .fa-google {
+      color: #EA4335;
+    }
+    
+    .fa-facebook-f {
+      color: #1877F2;
+    }
+    
+    .signup-footer {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    
+    a {
+      color: #a962ff;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="signup-container">
+    <div class="signup-header">
+      <h1>Create Account</h1>
+      <p>Join our community and discover amazing features</p>
+    </div>
+   
+    <form action="#" method="post" id="signupForm">
+      <div class="form-group">
+        <input type="text" class="form-control" id="fullname" placeholder=" " required>
+        <i class="fas fa-user form-icon"></i>
+        <label for="fullname" class="form-label">Full Name</label>
+      </div>
+     
+      <div class="form-group">
+        <input type="email" class="form-control" id="email" placeholder=" " required>
+        <i class="fas fa-envelope form-icon"></i>
+        <label for="email" class="form-label">Email Address</label>
+      </div>
+     
+      <div class="form-group">
+        <input type="text" class="form-control" id="username" placeholder=" " required>
+        <i class="fas fa-at form-icon"></i>
+        <label for="username" class="form-label">Username</label>
+      </div>
+     
+      <div class="form-group">
+        <input type="password" class="form-control" id="password" placeholder=" " required>
+        <i class="fas fa-lock form-icon"></i>
+        <label for="password" class="form-label">Password</label>
+        <i class="fas fa-eye-slash toggle-password" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #aaa;"></i>
+      </div>
+     
+      <button type="submit" class="btn btn-primary">
+        Sign Up <i class="fas fa-arrow-right"></i>
+      </button>
+     
+      <div class="divider">
+        <span>or sign up with</span>
+      </div>
+     
+      <div class="social-signup">
+        <div class="social-btn">
+          <i class="fab fa-google"></i> Google
+        </div>
+        <div class="social-btn">
+          <i class="fab fa-facebook-f"></i> Facebook
+        </div>
+      </div>
+    </form>
+   
+    <div class="signup-footer">
+      Already have an account? <a href="login.html">Sign In</a>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+      const passwordInput = document.querySelector('#password');
+      const icon = this;
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      }
+    });
+
+    // Add form submission event listener to redirect to homepage
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+      
+      // You can add validation or AJAX form submission here if needed
+      
+      // Simulate form processing (you can replace this with actual form processing)
+      setTimeout(function() {
+        // Redirect to homepage
+        window.location.href = 'index.html'; // Change this to your homepage URL
+      }, 500); // Short delay to give feedback that the form was submitted
+    });
+  </script>
+</body>
+</html>
