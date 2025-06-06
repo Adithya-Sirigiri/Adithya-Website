@@ -256,50 +256,57 @@
       <div class="divider">
         <span>or sign up with</span>
       </div>
-     
-      <div class="social-signup">
-        <div class="social-btn">
-          <i class="fab fa-google"></i> Google
-        </div>
-        <div class="social-btn">
-          <i class="fab fa-facebook-f"></i> Facebook
-        </div>
-      </div>
     </form>
    
     <div class="signup-footer">
       Already have an account? <a href="login.html">Sign In</a>
     </div>
   </div>
+<script>
+document.querySelector('.toggle-password').addEventListener('click', function() {
+  const passwordInput = document.querySelector('#password');
+  const icon = this;
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  } else {
+    passwordInput.type = 'password';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  }
+});
 
-  <script>
-    document.querySelector('.toggle-password').addEventListener('click', function() {
-      const passwordInput = document.querySelector('#password');
-      const icon = this;
-      
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-      } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-      }
-    });
-
-    // Add form submission event listener to redirect to homepage
-    document.getElementById('signupForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent default form submission
-      
-      // You can add validation or AJAX form submission here if needed
-      
-      // Simulate form processing (you can replace this with actual form processing)
-      setTimeout(function() {
-        // Redirect to homepage
-        window.location.href = 'index.html'; // Change this to your homepage URL
-      }, 500); // Short delay to give feedback that the form was submitted
-    });
-  </script>
+// Add form submission event listener to store user data and redirect to login page
+document.getElementById('signupForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent default form submission
+  
+  const username = document.getElementById('username').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  
+  // Get existing users from localStorage or create empty array if none exist
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  
+  // Check if username already exists
+  if (users.some(user => user.username === username)) {
+    alert("Username already exists. Please choose another one.");
+    return false;
+  }
+  
+  // Add new user
+  users.push({ username, email, password });
+  
+  // Save to localStorage
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  // Thank user and redirect
+  alert("Thank you for signing up!");
+  
+  // Redirect to login page
+  window.location.href = 'login.html';
+});
+</script>
 </body>
 </html>
